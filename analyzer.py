@@ -17,7 +17,7 @@ api_key = os.environ.get('GEMINI_API_KEY')
 if not api_key:
     raise ValueError("GEMINI_API_KEY environment variable is not set")
 genai.configure(api_key=api_key)
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-2.5-flash")
 
 def get_python_files(repo_path: str):
     try:
