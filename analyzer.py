@@ -6,11 +6,17 @@ import google.generativeai as genai
 import typer
 from rich.console import Console
 from rich.panel import Panel
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = typer.Typer()
 console = Console()
 
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+api_key = os.environ.get('GEMINI_API_KEY')
+if not api_key:
+    raise ValueError("GEMINI_API_KEY environment variable is not set")
+genai.configure(api_key=api_key)
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 def get_python_files(repo_path: str):
