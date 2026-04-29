@@ -2,6 +2,16 @@ import os
 from git import Repo
 from pathlib import Path
 import ast
+import google.generativeai as genai
+import typer
+from rich.console import Console
+from rich.panel import Panel
+
+app = typer.Typer()
+console = Console()
+
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 def get_python_files(repo_path: str):
     try:
@@ -29,3 +39,33 @@ def extract_functions_from_file(filepath: Path):
             })
     return functions
 
+def summarize_function(func_name: str, func_code:str) -> str:
+    prompt = f"""
+    You are an expert software engineer. Briefly summarize what this Python function does in 1-2 sentences.
+    Fucntion name: {func_name}
+    Code: {func_code}"""
+
+    response = model.generate_content(prompt)
+    return response.text.strip()
+
+@app.command()
+
+def analyze(repo_path: str = "."):
+    console.print(f"[bold green]Analyzing repository:[/bold green] {repo_path}")
+
+    files = get_python_files(repo_path)
+
+    for file in files:
+        funcs = extract_functions_from_file(file)
+        if not funcs:
+            continue
+
+        console.print(f"\n[bold blue] File:[/bold blue] {file.name}")
+
+        for f in funcs:
+            summary  = summarize_function(f["name"], f["code"])
+            console.print(Panel(summary, title=f["name"], border_style="cyan"))
+
+
+if __name__ == "__main__":
+    app()
