@@ -7,6 +7,7 @@ import typer
 from rich.console import Console
 from rich.panel import Panel
 from dotenv import load_dotenv
+import time
 
 load_dotenv()
 
@@ -17,7 +18,7 @@ api_key = os.environ.get('GEMINI_API_KEY')
 if not api_key:
     raise ValueError("GEMINI_API_KEY environment variable is not set")
 genai.configure(api_key=api_key)
-model = genai.GenerativeModel("gemini-2.5-flash")
+model = genai.GenerativeModel("gemini-2.5-flash-lite")
 
 def get_python_files(repo_path: str):
     try:
@@ -71,6 +72,7 @@ def analyze(repo_path: str = "."):
         for f in funcs:
             summary  = summarize_function(f["name"], f["code"])
             console.print(Panel(summary, title=f["name"], border_style="cyan"))
+            time.sleep(4)
 
 
 if __name__ == "__main__":
