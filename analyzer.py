@@ -55,9 +55,9 @@ def summarize_function(func_name: str, func_code:str) -> str:
     response = model.generate_content(prompt)
     return response.text.strip()
 
-@app.command()
+@app.callback(invoke_without_command=True)
 
-def analyze(repo_path: str = "."):
+def analyze(repo_path: str = typer.Argument(".", help="The folder to scan")):
     console.print(f"[bold green]Analyzing repository:[/bold green] {repo_path}")
 
     files = get_python_files(repo_path)
