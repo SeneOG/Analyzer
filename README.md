@@ -1,4 +1,4 @@
-# analyzer
+# Analyzer
 
 analyzer is a small command-line tool that scans a local Git repository (or any folder) for Python files and generates clear, human-friendly summaries of each function it finds.
 
